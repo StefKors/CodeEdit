@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import GenericTabBar
 
 internal struct StatusBarToggleDrawerButton: View {
     @ObservedObject
@@ -19,8 +20,14 @@ internal struct StatusBarToggleDrawerButton: View {
         Button {
             withAnimation {
                 model.isExpanded.toggle()
-                if model.isExpanded && model.currentHeight < 1 {
-                    model.currentHeight = 300
+                if model.isExpanded {
+                    if model.currentHeight < 1 {
+                        model.currentHeight = 300
+                    }
+
+                    if model.tabs.isEmpty {
+                        model.createFileTab(item: GenericTabItem(url: model.workspaceURL))
+                    }
                 }
             }
             // Show/hide terminal window

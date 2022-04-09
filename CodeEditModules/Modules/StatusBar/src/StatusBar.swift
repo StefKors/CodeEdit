@@ -7,6 +7,7 @@
 
 import SwiftUI
 import GitClient
+import GenericTabBar
 
 /// # StatusBarView
 ///

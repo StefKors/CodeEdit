@@ -1,33 +1,16 @@
 //
-//  TabBarItem.swift
-//  CodeEdit
+//  GenericTabBarItemView.swift
+//  
 //
-//  Created by Lukas Pistrol on 17.03.22.
+//  Created by Stef Kors on 09/04/2022.
 //
 
 import SwiftUI
-import WorkspaceClient
 import AppPreferences
 import Design
+import Foundation
 
-struct TabDivider: View {
-    @Environment(\.colorScheme)
-    var colorScheme
-    let width: CGFloat = 1
-
-    var body: some View {
-        Group {
-            Rectangle()
-        }
-        .frame(width: width)
-        .foregroundColor(
-            Color(nsColor: colorScheme == .dark ? .white : .black)
-                .opacity(colorScheme == .dark ? 0.08 : 0.12)
-        )
-    }
-}
-
-struct TabBarItem: View {
+struct GenericTabBarItemView: View {
     @Environment(\.colorScheme)
     var colorScheme
 
@@ -43,28 +26,27 @@ struct TabBarItem: View {
     @State
     var isPressingClose: Bool = false
 
-    var item: WorkspaceClient.FileItem
-    var windowController: NSWindowController
+    var item: GenericTabItem
 
     func closeAction () {
         withAnimation {
-            workspace.closeFileTab(item: item)
+            tabsModel.closeFileTab(item: item)
         }
     }
 
     @ObservedObject
-    var workspace: WorkspaceDocument
+    var tabsModel: GenericTabsModel
 
     var tabBarHeight: Double = 28.0
 
     var isActive: Bool {
-        item.id == workspace.selectionState.selectedId
+        item.id == tabsModel.selectionState.selectedId
     }
 
     @ViewBuilder
     var content: some View {
         HStack(spacing: 0.0) {
-            TabDivider()
+            GenericTabDivider()
             HStack(alignment: .center, spacing: 5) {
                 ZStack {
                     if isActive {
@@ -87,13 +69,18 @@ struct TabBarItem: View {
                     .buttonStyle(PlainButtonStyle())
                     .foregroundColor(isPressingClose ? .primary : .secondary)
                     .background(colorScheme == .dark
-                        ? Color(nsColor: .white).opacity(isPressingClose ? 0.32 : isHoveringClose ? 0.18 : 0)
-                        : Color(nsColor: .black).opacity(isPressingClose ? 0.29 : isHoveringClose ? 0.11 : 0)
+                                ? Color(nsColor: .white).opacity(isPressingClose ? 0.32 : isHoveringClose ? 0.18 : 0)
+                                : Color(nsColor: .black).opacity(isPressingClose ? 0.29 : isHoveringClose ? 0.11 : 0)
                     )
                     .cornerRadius(2)
                     .accessibilityLabel(Text("Close"))
                     .onHover { hover in
                         isHoveringClose = hover
+                    }
+                    .pressAction {
+                        isPressingClose = true
+                    } onRelease: {
+                        isPressingClose = false
                     }
                     .opacity(isHovering ? 1 : 0)
                     .animation(.easeInOut(duration: 0.15), value: isHovering)
@@ -116,12 +103,12 @@ struct TabBarItem: View {
                 Color(nsColor: isActive ? .clear : .black)
                     .opacity(
                         colorScheme == .dark
-                            ? isHovering ? 0.15 : 0.45
-                            : isHovering ? 0.15 : 0.05
+                        ? isHovering ? 0.15 : 0.45
+                        : isHovering ? 0.15 : 0.05
                     )
                     .animation(.easeInOut(duration: 0.15), value: isHovering)
             )
-            TabDivider()
+            GenericTabDivider()
         }
         .frame(height: tabBarHeight)
         .foregroundColor(isActive ? .primary : .secondary)
@@ -138,7 +125,9 @@ struct TabBarItem: View {
     }
     var body: some View {
         Button(
-            action: { workspace.selectionState.selectedId = item.id },
+            action: {
+                tabsModel.selectionState.selectedId = item.id
+            },
             label: { content }
         )
         .background(BlurView(
@@ -148,33 +137,33 @@ struct TabBarItem: View {
         .buttonStyle(.plain)
         .id(item.id)
         .keyboardShortcut(
-            workspace.getTabKeyEquivalent(item: item),
+            tabsModel.getTabKeyEquivalent(item: item),
             modifiers: [.command]
         )
         .contextMenu {
             Button("Close Tab") {
                 withAnimation {
-                    workspace.closeFileTab(item: item)
+                    tabsModel.closeFileTab(item: item)
                 }
             }
             Button("Close Other Tabs") {
                 withAnimation {
-                    workspace.closeFileTab(where: { $0.id != item.id })
+                    tabsModel.closeFileTab(where: { $0.id != item.id })
                 }
             }
             Button("Close Tabs to the Right") {
                 withAnimation {
-                    workspace.closeFileTabs(after: item)
+                    tabsModel.closeFileTabs(after: item)
                 }
             }
         }
     }
 }
 
-fileprivate extension WorkspaceDocument {
-    func getTabKeyEquivalent(item: WorkspaceClient.FileItem) -> KeyEquivalent {
-        for counter in 0..<9 where self.selectionState.openFileItems.count > counter &&
-        self.selectionState.openFileItems[counter].fileName == item.fileName {
+fileprivate extension GenericTabsModel {
+    func getTabKeyEquivalent(item: GenericTabItem) -> KeyEquivalent {
+        for counter in 0..<9 where self.selectionState.tabs.count > counter &&
+        self.selectionState.tabs[counter].fileName == item.fileName {
             return KeyEquivalent.init(
                 Character.init("\(counter + 1)")
             )

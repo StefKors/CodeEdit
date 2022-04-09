@@ -7,12 +7,13 @@
 
 import GitClient
 import SwiftUI
+import GenericTabBar
 
 /// # StatusBarModel
 ///
 /// A model class to host and manage data for the ``StatusBarView``
 ///
-public class StatusBarModel: ObservableObject {
+public class StatusBarModel: GenericTabsModel {
     // TODO: Implement logic for updating values
     /// Returns number of errors during comilation
     @Published
@@ -39,11 +40,11 @@ public class StatusBarModel: ObservableObject {
     public var currentCol: Int = 1 // Implementation missing
 
     /// Returns true when the drawer is visible
-    @Published
+    @AppStorage("statusbar.isExpanded")
     public var isExpanded: Bool = false
 
     /// The current height of the drawer. Zero if hidden
-    @Published
+    @AppStorage("statusbar.currentHeight")
     public var currentHeight: Double = 0
 
     /// Indicates whether the drawer is beeing resized or not
@@ -84,6 +85,16 @@ public class StatusBarModel: ObservableObject {
             self.selectedBranch = selectedBranch
         } catch {
             selectedBranch = nil
+        }
+
+        super.init(tabs: [ GenericTabItem(url: workspaceURL) ])
+    }
+
+    public override func closeFileTab(item: GenericTabItem) {
+        super.closeFileTab(item: item)
+
+        if tabs.isEmpty {
+            isExpanded = false
         }
     }
 }

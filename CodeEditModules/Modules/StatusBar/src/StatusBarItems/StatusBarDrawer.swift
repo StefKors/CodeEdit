@@ -7,6 +7,7 @@
 
 import SwiftUI
 import TerminalEmulator
+import GenericTabBar
 
 internal struct StatusBarDrawer: View {
     @ObservedObject
@@ -17,9 +18,13 @@ internal struct StatusBarDrawer: View {
     }
 
     internal var body: some View {
-        TerminalEmulatorView(url: model.workspaceURL)
-            .frame(minHeight: 0,
-                   idealHeight: model.isExpanded ? model.currentHeight : 0,
-                   maxHeight: model.isExpanded ? model.currentHeight : 0)
+        GenericTabBarView(model: model) { item in
+            Text(item.url.absoluteString)
+            // It's switching but there is something odd with the TerminalEmulatorView
+            TerminalEmulatorView(url: item.url)
+                .frame(minHeight: 0,
+                       idealHeight: model.isExpanded ? model.currentHeight : 0,
+                       maxHeight: model.isExpanded ? model.currentHeight : 0)
+        }
     }
 }

@@ -69,6 +69,10 @@ let package = Package(
             name: "Design",
             targets: ["Design"]
         ),
+        .library(
+            name: "GenericTabBar",
+            targets: ["GenericTabBar"]
+        ),
     ],
     dependencies: [
         .package(
@@ -100,6 +104,9 @@ let package = Package(
     targets: [
         .target(
             name: "WorkspaceClient",
+            dependencies: [
+                "GenericTabBar"
+            ],
             path: "Modules/WorkspaceClient/src"
         ),
         .testTarget(
@@ -150,6 +157,7 @@ let package = Package(
                 "GitClient",
                 "TerminalEmulator",
                 "CodeFile",
+                "GenericTabBar",
             ],
             path: "Modules/StatusBar/src"
         ),
@@ -226,6 +234,14 @@ let package = Package(
                 "Introspect",
             ],
             path: "Modules/Design/src"
+        ),
+        .target(
+            name: "GenericTabBar",
+            dependencies: [
+                "AppPreferences",
+                "Design",
+            ],
+            path: "Modules/TabBar/src"
         ),
     ]
 )
