@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-public class GenericTabBarSelectionState: Codable {
+open class GenericTabBarSelectionState: Codable {
     public var selectedId: String?
     public var tabs: [GenericTabItem] = [] {
         didSet {

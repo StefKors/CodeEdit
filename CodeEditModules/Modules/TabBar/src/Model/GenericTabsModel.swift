@@ -7,8 +7,8 @@
 
 import Foundation
 
-open class GenericTabsModel: ObservableObject {
-    @Published var selectionState: GenericTabBarSelectionState
+open class GenericTabsModel: GenericTabsModelProtocol {
+    @Published public var selectionState: GenericTabBarSelectionState
     public var tabs: [GenericTabItem] {
         selectionState.tabs
     }
@@ -53,4 +53,9 @@ open class GenericTabsModel: ObservableObject {
         let range = selectionState.tabs[(startIdx+1)...]
         closeFileTabs(items: range)
     }
+}
+
+public protocol GenericTabsModelProtocol: ObservableObject {
+    var selectionState: GenericTabBarSelectionState { get set }
+    var tabs: [GenericTabItem] { get }
 }

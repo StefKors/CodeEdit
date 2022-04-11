@@ -13,13 +13,20 @@ import Combine
 import CodeFile
 import Search
 import QuickOpen
+import GenericTabBar
 
 @objc(WorkspaceDocument)
-class WorkspaceDocument: NSDocument, ObservableObject, NSToolbarDelegate {
+class WorkspaceDocument: NSDocument, NSToolbarDelegate, GenericTabsModelProtocol {
+    var selectionState: GenericTabBarSelectionState = .init()
+
+    var tabs: [GenericTabItem] {
+        selectionState.tabs
+    }
+
     var workspaceClient: WorkspaceClient?
 
     @Published var sortFoldersOnTop: Bool = true
-    @Published var selectionState: WorkspaceSelectionState = .init()
+    // @Published var selectionState: WorkspaceSelectionState = .init()
 
     var searchState: SearchState?
     var quickOpenState: QuickOpenState?
@@ -275,34 +282,8 @@ extension WorkspaceDocument {
 
 // MARK: - Selection
 
-struct WorkspaceSelectionState: Codable {
-
-    var selectedId: String?
+class WorkspaceSelectionState: GenericTabBarSelectionState {
     var openFileItems: [WorkspaceClient.FileItem] = []
     var fileItems: [WorkspaceClient.FileItem] = []
-
-    var selected: WorkspaceClient.FileItem? {
-        guard let selectedId = selectedId else { return nil }
-        return fileItems.first(where: { $0.id == selectedId })
-    }
     var openedCodeFiles: [WorkspaceClient.FileItem: CodeFileDocument] = [:]
-
-    enum CodingKeys: String, CodingKey {
-        case selectedId, openFileItems
-    }
-
-    init() {
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        selectedId = try container.decode(String?.self, forKey: .selectedId)
-        openFileItems = try container.decode([WorkspaceClient.FileItem].self, forKey: .openFileItems)
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(selectedId, forKey: .selectedId)
-        try container.encode(openFileItems, forKey: .openFileItems)
-    }
 }

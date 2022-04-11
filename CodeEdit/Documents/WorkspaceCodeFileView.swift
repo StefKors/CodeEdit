@@ -9,6 +9,7 @@ import SwiftUI
 import CodeFile
 import WorkspaceClient
 import StatusBar
+import GenericTabBar
 
 struct WorkspaceCodeFileView: View {
     var windowController: NSWindowController
@@ -26,6 +27,9 @@ struct WorkspaceCodeFileView: View {
                 CodeFileView(codeFile: codeFile)
                     .safeAreaInset(edge: .top, spacing: 0) {
                         VStack(spacing: 0) {
+                            GenericTabBarView(model: workspace, content: { item in
+                                Text(item.url.absoluteString)
+                            })
                             TabBar(windowController: windowController, workspace: workspace)
                             Divider()
                             BreadcrumbsView(item, workspace: workspace)
