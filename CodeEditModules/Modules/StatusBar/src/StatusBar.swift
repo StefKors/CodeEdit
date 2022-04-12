@@ -17,22 +17,27 @@ import GitClient
 /// Additionally it offers a togglable/resizable drawer which can
 /// host a terminal or additional debug information
 ///
-public struct StatusBarView: View {
+public struct StatusBarView<Content: View>: View {
     @ObservedObject
     private var model: StatusBarModel
 
+    private let content: Content
+
     /// Initialize with GitClient
     /// - Parameter gitClient: a GitClient
-    public init(workspaceURL: URL) {
-        self.model = .init(workspaceURL: workspaceURL)
+    public init(workspaceURL: URL, @ViewBuilder content: @escaping (StatusBarModel) -> Content) {
+        let model = StatusBarModel.init(workspaceURL: workspaceURL)
+        self.model = model
+        self.content = content(model)
     }
 
     public var body: some View {
         VStack(spacing: 0) {
             bar
             if model.isExpanded {
-                StatusBarDrawer(model: model)
-                    .transition(.move(edge: .bottom))
+                content
+                // StatusBarDrawer(model: model)
+                //     .transition(.move(edge: .bottom))
             }
         }
         // removes weird light gray bar above when in light mode
@@ -111,7 +116,9 @@ struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
         ZStack(alignment: .bottom) {
             Color.white
-            StatusBarView(workspaceURL: URL(fileURLWithPath: ""))
+            StatusBarView(workspaceURL: URL(fileURLWithPath: "")) { _ in
+                Text("status bar content")
+            }
                 .previewLayout(.fixed(width: 1.336, height: 500.0))
                 .preferredColorScheme(.light)
         }

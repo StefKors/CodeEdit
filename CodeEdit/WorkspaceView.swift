@@ -8,6 +8,7 @@
 import SwiftUI
 import WorkspaceClient
 import StatusBar
+import TerminalEmulator
 
 struct WorkspaceView: View {
     init(windowController: NSWindowController, workspace: WorkspaceDocument) {
@@ -40,7 +41,19 @@ struct WorkspaceView: View {
                 WorkspaceCodeFileView(windowController: windowController, workspace: workspace)
                     .safeAreaInset(edge: .bottom) {
                         if let url = workspace.fileURL {
-                            StatusBarView(workspaceURL: url)
+                            StatusBarView(workspaceURL: url) { _ in
+                                HSplitView {
+                                    TerminalOutlineView(workspace: workspace)
+                                    TerminalEmulatorView(url: URL(string: "~/Developer")!)
+                                    TerminalEmulatorView(url: URL(string: "~/Developer/beam")!)
+                                }
+                                .frame(minHeight: 0,
+                                       idealHeight: 300,
+                                       maxHeight: 300)
+                                        // .frame(minHeight: 0,
+                                        //        idealHeight: model.isExpanded ? model.currentHeight : 0,
+                                        //        maxHeight: model.isExpanded ? model.currentHeight : 0)
+                            }
                         }
                     }
             } else {

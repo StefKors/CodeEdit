@@ -49,6 +49,10 @@
 		5CF38A5E27E48E6C0096A0F7 /* CodeFile in Frameworks */ = {isa = PBXBuildFile; productRef = 5CF38A5D27E48E6C0096A0F7 /* CodeFile */; };
 		5CFA753B27E896B60002F01B /* GitClient in Frameworks */ = {isa = PBXBuildFile; productRef = 5CFA753A27E896B60002F01B /* GitClient */; };
 		64B64EDE27F7B79400C400F1 /* About in Frameworks */ = {isa = PBXBuildFile; productRef = 64B64EDD27F7B79400C400F1 /* About */; };
+		8AB6ADCD2805F784005349AB /* TerminalOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB6ADCC2805F784005349AB /* TerminalOutlineView.swift */; };
+		8AB6ADCF2805F7C5005349AB /* TerminalOutlineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB6ADCE2805F7C5005349AB /* TerminalOutlineViewController.swift */; };
+		8AB6ADD12805F808005349AB /* TerminalOutlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB6ADD02805F808005349AB /* TerminalOutlineTableViewCell.swift */; };
+		8AB6ADD32805F826005349AB /* TerminalOutlineMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB6ADD22805F826005349AB /* TerminalOutlineMenu.swift */; };
 		B658FB3427DA9E1000EA4DBD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B658FB3327DA9E1000EA4DBD /* Assets.xcassets */; };
 		B658FB3727DA9E1000EA4DBD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B658FB3627DA9E1000EA4DBD /* Preview Assets.xcassets */; };
 		B673FDAD27E8296A00795864 /* PressActionsModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B673FDAC27E8296A00795864 /* PressActionsModifier.swift */; };
@@ -125,6 +129,10 @@
 		287776EE27E3515300D46668 /* TabBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarItem.swift; sourceTree = "<group>"; };
 		28B0A19727E385C300B73177 /* NavigatorSidebarToolbarTop.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = NavigatorSidebarToolbarTop.swift; sourceTree = "<group>"; tabWidth = 4; };
 		28FFE1BE27E3A441001939DB /* NavigatorSidebarToolbarBottom.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = NavigatorSidebarToolbarBottom.swift; sourceTree = "<group>"; tabWidth = 4; };
+		8AB6ADCC2805F784005349AB /* TerminalOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalOutlineView.swift; sourceTree = "<group>"; };
+		8AB6ADCE2805F7C5005349AB /* TerminalOutlineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalOutlineViewController.swift; sourceTree = "<group>"; };
+		8AB6ADD02805F808005349AB /* TerminalOutlineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalOutlineTableViewCell.swift; sourceTree = "<group>"; };
+		8AB6ADD22805F826005349AB /* TerminalOutlineMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalOutlineMenu.swift; sourceTree = "<group>"; };
 		B658FB2C27DA9E0F00EA4DBD /* CodeEdit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodeEdit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B658FB3127DA9E0F00EA4DBD /* WorkspaceView.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceView.swift; sourceTree = "<group>"; tabWidth = 4; };
 		B658FB3327DA9E1000EA4DBD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -286,6 +294,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		8AB6ADC12805F721005349AB /* TerminalOutline */ = {
+			isa = PBXGroup;
+			children = (
+				8AB6ADCC2805F784005349AB /* TerminalOutlineView.swift */,
+				8AB6ADCE2805F7C5005349AB /* TerminalOutlineViewController.swift */,
+				8AB6ADD02805F808005349AB /* TerminalOutlineTableViewCell.swift */,
+				8AB6ADD22805F826005349AB /* TerminalOutlineMenu.swift */,
+			);
+			path = TerminalOutline;
+			sourceTree = "<group>";
+		};
 		B658FB2327DA9E0F00EA4DBD = {
 			isa = PBXGroup;
 			children = (
@@ -310,6 +329,7 @@
 		B658FB2E27DA9E0F00EA4DBD /* CodeEdit */ = {
 			isa = PBXGroup;
 			children = (
+				8AB6ADC12805F721005349AB /* TerminalOutline */,
 				0463E50F27FCC19800806D5C /* Extensions */,
 				2875A46E27E3BE63007805F8 /* Breadcrumbs */,
 				043C321227E31FE8006AE443 /* Documents */,
@@ -606,18 +626,21 @@
 				0483E35027FDB17700354AC0 /* ExtensionNavigator.swift in Sources */,
 				2B7A583527E4BA0100D25D4E /* AppDelegate.swift in Sources */,
 				2875A46D27E3BE5B007805F8 /* BreadcrumbsView.swift in Sources */,
+				8AB6ADCF2805F7C5005349AB /* TerminalOutlineViewController.swift in Sources */,
 				D7012EE827E757850001E1EF /* FindNavigator.swift in Sources */,
 				D7E201AE27E8B3C000CB86D0 /* String+Ranges.swift in Sources */,
 				0463E51327FCC1FB00806D5C /* CodeEditTargetsAPI.swift in Sources */,
 				04C3254D27FF331B00C8DA2D /* ExtensionNavigatorItem.swift in Sources */,
 				D7E201B027E8C07300CB86D0 /* FindNavigatorSearchBar.swift in Sources */,
 				B6EE989227E887C600CDD8AB /* InspectorSidebarToolbar.swift in Sources */,
+				8AB6ADD12805F808005349AB /* TerminalOutlineTableViewCell.swift in Sources */,
 				B673FDAD27E8296A00795864 /* PressActionsModifier.swift in Sources */,
 				043C321427E31FF6006AE443 /* CodeEditDocumentController.swift in Sources */,
 				04C3255C2801F86900C8DA2D /* OutlineMenu.swift in Sources */,
 				04540D5E27DD08C300E91B77 /* WorkspaceView.swift in Sources */,
 				D7211D4327E066CE008F2ED7 /* Localized+Ex.swift in Sources */,
 				D7E201B227E8D50000CB86D0 /* FindNavigatorModeSelector.swift in Sources */,
+				8AB6ADCD2805F784005349AB /* TerminalOutlineView.swift in Sources */,
 				287776E927E34BC700D46668 /* TabBar.swift in Sources */,
 				285FEC7027FE4B9800E57D53 /* OutlineTableViewCell.swift in Sources */,
 				0485EB1F27E7458B00138301 /* WorkspaceCodeFileView.swift in Sources */,
@@ -631,6 +654,7 @@
 				04C3254F2800AA4700C8DA2D /* ExtensionInstallationView.swift in Sources */,
 				B6EE989027E8879A00CDD8AB /* InspectorSidebar.swift in Sources */,
 				D76D11CC27F2F2B6009FE61F /* BreadcrumbsMenu.swift in Sources */,
+				8AB6ADD32805F826005349AB /* TerminalOutlineMenu.swift in Sources */,
 				043C321627E3201F006AE443 /* WorkspaceDocument.swift in Sources */,
 				04C325512800AC7400C8DA2D /* ExtensionInstallationViewModel.swift in Sources */,
 				28B0A19827E385C300B73177 /* NavigatorSidebarToolbarTop.swift in Sources */,

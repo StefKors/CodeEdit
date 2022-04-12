@@ -40,7 +40,7 @@ public class StatusBarModel: ObservableObject {
 
     /// Returns true when the drawer is visible
     @Published
-    public var isExpanded: Bool = false
+    public var isExpanded: Bool = true
 
     /// The current height of the drawer. Zero if hidden
     @Published

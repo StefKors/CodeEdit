@@ -40,6 +40,15 @@ public struct GeneralPreferencesView: View {
                 }
                 .pickerStyle(.radioGroup)
             }
+            PreferencesSection("Terminal Icon Style") {
+                Picker("Terminal Icon Style:", selection: $prefs.preferences.general.terminalIconStyle) {
+                    Text("Color")
+                        .tag(AppPreferences.TerminalIconStyle.color)
+                    Text("Monochrome")
+                        .tag(AppPreferences.TerminalIconStyle.monochrome)
+                }
+                .pickerStyle(.radioGroup)
+            }
             PreferencesSection("Reopen Behavior") {
                 Picker("Reopen Behavior:", selection: $prefs.preferences.general.reopenBehavior) {
                     Text("Welcome Screen")

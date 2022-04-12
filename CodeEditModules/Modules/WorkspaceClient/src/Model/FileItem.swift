@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 public extension WorkspaceClient {
+    /// MARK: - FileItem
     enum FileItemCodingKeys: String, CodingKey {
         case id
         case url
@@ -191,6 +192,184 @@ public extension WorkspaceClient {
                 return Color(red: 0.925, green: 0.251, blue: 0.478, opacity: 1.0)
             case "Makefile":
                 return Color(red: 0.937, green: 0.325, blue: 0.314, opacity: 1.0)
+            default:
+                return .accentColor
+            }
+        }
+
+        // MARK: Statics
+
+        /// The default `FileManager` instance
+        public static let fileManger = FileManager.default
+
+        // MARK: Intents
+
+        /// Allows the user to view the file or folder in the finder application
+        public func showInFinder() {
+            NSWorkspace.shared.activateFileViewerSelecting([url])
+        }
+
+        /// This function allows creation of folders in the main directory or sub-folders
+        /// - Parameter folderName: The name of the new folder
+        public func addFolder(folderName: String) {
+            let folderUrl = url.appendingPathComponent(folderName)
+            do {
+                try FileItem.fileManger.createDirectory(at: folderUrl,
+                                                        withIntermediateDirectories: true,
+                                                        attributes: [:])
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
+
+        /// This function allows creating files in the selected folder or project main directory
+        /// - Parameter fileName: The name of the new file
+        public func addFile(fileName: String) {
+            let fileUrl = url.appendingPathComponent(fileName)
+            FileItem.fileManger.createFile(
+                atPath: fileUrl.path,
+                contents: nil,
+                attributes: [FileAttributeKey.creationDate: Date()]
+            )
+        }
+
+        /// This function deletes the item or folder from the current project
+        public func delete() {
+            if FileItem.fileManger.fileExists(atPath: url.path) {
+                do {
+                    try FileItem.fileManger.removeItem(at: url)
+                } catch {
+                    fatalError(error.localizedDescription)
+                }
+            }
+        }
+    }
+
+    /// MARK: - TerminalItem
+    enum TerminalItemCodingKeys: String, CodingKey {
+        case id
+        case url
+        case children
+    }
+
+
+    /// An object containing all necessary information and actions for a specific terminal in the workspace
+    class TerminalItem: Identifiable, Codable {
+        public typealias ID = String
+        public enum GroupIcon: String {
+            case .horizontal = "square.split.2x1"
+            case .vertical = "square.split.1x2"
+        }
+
+        public init(
+            url: URL,
+            children: [TerminalItem]? = nil
+        ) {
+            self.url = url
+            self.children = children
+            id = UUID().uuidString
+        }
+
+        public required init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: TerminalItemCodingKeys.self)
+            id = try values.decode(String.self, forKey: .id)
+            url = try values.decode(URL.self, forKey: .url)
+            children = try values.decode([TerminalItem]?.self, forKey: .children)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: TerminalItemCodingKeys.self)
+            try container.encode(id, forKey: .id)
+            try container.encode(url, forKey: .url)
+            try container.encode(children, forKey: .children)
+        }
+
+        /// The id of the ``WorkspaceClient/WorkspaceClient/TerminalItem``.
+        ///
+        /// This is equal to `url.relativePath`
+        public var id: ID
+
+        /// Returns the URL of the ``WorkspaceClient/WorkspaceClient/TerminalItem``
+        public var url: URL
+
+        /// Returns the children of the current ``WorkspaceClient/WorkspaceClient/TerminalItem``.
+        ///
+        /// If the current ``WorkspaceClient/WorkspaceClient/TerminalItem`` is a file this will be `nil`.
+        /// If it is an empty folder this will be an empty array.
+        public var children: [TerminalItem]?
+
+        /// Returns a parent ``WorkspaceClient/WorkspaceClient/TerminalItem``.
+        ///
+        /// If the item already is the top-level ``WorkspaceClient/WorkspaceClient/TerminalItem`` this returns `nil`.
+        public var parent: TerminalItem?
+
+        /// A boolean that is true if ``children`` is not `nil`
+        public var isFolder: Bool {
+            children != nil
+        }
+
+        /// A boolean that is true if the terminal item is the root level of the tree.
+        public var isRoot: Bool {
+            parent == nil
+        }
+
+        /// Returns a string describing a SFSymbol for the current ``WorkspaceClient/WorkspaceClient/TerminalItem``
+        ///
+        /// Use it like this
+        /// ```swift
+        /// Image(systemName: item.systemImage)
+        /// ```
+        public var systemImage: String {
+            switch children {
+            case nil:
+                return terminalIcon
+            case let .some(children):
+                return groupIcon(children)
+            }
+        }
+
+        /// Returns the file name (e.g.: `Package.swift`)
+        public var shellName: String {
+            url.lastPathComponent
+        }
+
+        /// Returns the extension of the file or an empty string if no extension is present.
+        private var shellType: String {
+            url.lastPathComponent.components(separatedBy: ".").last ?? ""
+        }
+
+        /// Returns a string describing a SFSymbol for terminal groups
+        ///
+        /// TODO: document
+        private func groupIcon(_ children: [TerminalItem]) -> String {
+            if self.parent == nil {
+                return GroupIcon.horizontal.rawValue
+            }
+            return children.isEmpty ? GroupIcon.horizontal.rawValue : GroupIcon.vertical.rawValue
+        }
+
+        /// Returns a string describing a SFSymbol for terminal shells
+        ///
+        /// If not specified otherwise this will return `"terminal"`
+        private var terminalIcon: String {
+            // TODO: Use correct icons
+            switch shellType {
+            case "bash":
+                return "terminal"
+            case "zsh":
+                return "terminal.fill"
+            default:
+                return "terminal"
+            }
+        }
+
+        /// Returns a `Color` for a specific `shellType`
+        ///
+        /// If not specified otherwise this will return `Color.accentColor`
+        public var iconColor: Color {
+            switch shellType {
+            case "bash":
+                return .orange
             default:
                 return .accentColor
             }

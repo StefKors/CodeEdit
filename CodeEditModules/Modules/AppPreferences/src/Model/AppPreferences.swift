@@ -58,6 +58,9 @@ public extension AppPreferences {
         /// The style for file icons
         public var fileIconStyle: FileIconStyle = .color
 
+        /// The style for terminal icons
+        public var terminalIconStyle: TerminalIconStyle = .monochrome
+
         /// The reopen behavior of the app
         public var reopenBehavior: ReopenBehavior = .welcome
 
@@ -72,6 +75,8 @@ public extension AppPreferences {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             self.appAppearance = try container.decodeIfPresent(Appearances.self, forKey: .appAppearance) ?? .system
             self.fileIconStyle = try container.decodeIfPresent(FileIconStyle.self, forKey: .fileIconStyle) ?? .color
+            self.terminalIconStyle = try container.decodeIfPresent(TerminalIconStyle.self,
+                                                                   forKey: .terminalIconStyle) ?? .monochrome
             self.reopenBehavior = try container.decodeIfPresent(ReopenBehavior.self,
                                                                 forKey: .reopenBehavior) ?? .welcome
             self.projectNavigatorSize = try container.decodeIfPresent(ProjectNavigatorSize.self,
@@ -101,6 +106,14 @@ public extension AppPreferences {
                 NSApp.appearance = .init(named: .aqua)
             }
         }
+    }
+
+    /// The style for terminal icons
+    /// - **color**: Terminal icons appear in their default colors
+    /// - **monochrome**: Terminal icons appear monochromatic
+    enum TerminalIconStyle: String, Codable {
+        case color
+        case monochrome
     }
 
     /// The style for file icons
